@@ -1365,6 +1365,16 @@ class Parsedown
         {
             return;
         }
+        
+        //example: "http://www.example.com/image.png#100x100" or "http://www.example.com/image.png"
+        $width = null;
+        $height = null;
+        $href = $Link['element']['attributes']['href'];
+        if (preg_match('/^(.*)#(\d+)x(\d+)$/', $href, $matches)) {
+            $Link['element']['attributes']['href'] = $matches[1];
+            $width = $matches[2];
+            $height = $matches[3];
+        }
 
         $Inline = array(
             'extent' => $Link['extent'] + 1,
@@ -1377,6 +1387,13 @@ class Parsedown
                 'autobreak' => true,
             ),
         );
+
+        if ($width !== null) {
+            $Inline['element']['attributes']['width'] = $width;
+        }
+        if ($height !== null) {
+            $Inline['element']['attributes']['height'] = $height;
+        }
 
         $Inline['element']['attributes'] += $Link['element']['attributes'];
 
